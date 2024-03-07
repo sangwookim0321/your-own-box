@@ -41,6 +41,7 @@
 	// 사용자가 답변을 선택했을 때 호출되는 함수
 	function selectAnswer(answerIndex) {
 		userAnswers[currentQuestionIndex] = answerIndex + 1 // 답변 저장
+
 		console.log('userAnswers : ', userAnswers)
 		if (currentQuestionIndex < items.length - 1) {
 			currentQuestionIndex += 1 // 다음 문제로 인덱스 업데이트
@@ -243,6 +244,9 @@
 		.question_list span {
 			padding: 0.5rem;
 			margin: 0.5rem 0;
+		}
+		.question_list span:hover {
+			font-weight: 500;
 		}
 	}
 </style>
