@@ -30,6 +30,35 @@
 	--padding-standard: 1rem;
 }
 
+.color_challenger {
+	background: linear-gradient(to right, #f4e07d, #9fe8fa);
+	color: white;
+}
+.color_diamond {
+	background: linear-gradient(to right, #b0d0d3, #88a2d3);
+	color: white;
+}
+.color_platinum {
+	background: linear-gradient(to right, #42A89E, #f2f2f2);
+	color: white;
+}
+.color_gold {
+	background: linear-gradient(to right, #f4e07d, #e9fbff);
+	color: white;
+}
+.color_silver {
+	background: linear-gradient(to right, #d3d3d3, #b3b3b3);
+	color: white;
+}
+.color_bronze {
+	background: linear-gradient(to right, #cd7f32, #b3b3b3);
+	color: white;
+}
+.color_iron {
+	background: linear-gradient(to right, #43464b, #b3b3b3);
+	color: white;
+}
+
 html {
 	font-size: 10px;
 }

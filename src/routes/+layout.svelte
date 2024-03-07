@@ -1,24 +1,38 @@
 <script>
 	import { onMount } from 'svelte'
+	import { goto } from '$app/navigation'
+	import { page } from '$app/stores.js'
 
 	let showSubMenu = false
+	let currentPath = ''
+
+	$: currentPath = $page.url.pathname
+	$: console.log(currentPath)
 
 	function toggleSubMenu() {
 		showSubMenu = !showSubMenu
+	}
+
+	async function goHome() {
+		// 홈으로 이동
+		await goto('/')
 	}
 </script>
 
 <main>
 	<div class="layout">
-		<header>
+		<header class={currentPath === '/' ? 'header_end' : 'header_between'}>
+			{#if currentPath !== '/'}
+				<div class="header_logo" on:click={goHome}>
+					<img src="/imgs/main-logo-128.png" alt="main-logo" />
+				</div>
+			{/if}
 			<div class="hamburger" on:click={toggleSubMenu}>
 				<img src="/imgs/icon_menu.svg" alt="메뉴" />
 				{#if showSubMenu}
 					<div class="submenu">
 						<ul>
-							<li>Item 1</li>
-							<li>Item 2</li>
-							<li>Item 3</li>
+							<li></li>
 						</ul>
 					</div>
 				{/if}
@@ -28,8 +42,13 @@
 			<slot />
 		</div>
 		<footer>
-			<div class="footer_text">Made by Hardy</div>
-			<div class="footer_text">pointjumpit@gmail.com</div>
+			<div class="footer_logo_box">
+				<img src="/imgs/main-logo-128.png" alt="main-logo" />
+			</div>
+			<div class="footer_text_box">
+				<div class="footer_text">Made by Hardy</div>
+				<div class="footer_text">pointjumpit@gmail.com</div>
+			</div>
 		</footer>
 	</div>
 </main>
@@ -54,8 +73,20 @@
 	header {
 		padding: 1rem;
 		display: flex;
-		justify-content: flex-end;
+		align-items: center;
 		width: 100%;
+		height: 20px;
+	}
+	.header_end {
+		justify-content: flex-end;
+	}
+	.header_between {
+		justify-content: space-between;
+	}
+	.header_logo img {
+		width: 50px;
+		height: 50px;
+		cursor: pointer;
 	}
 	.layout {
 		display: flex;
@@ -76,11 +107,13 @@
 	}
 	footer {
 		display: flex;
-		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 		width: 100%;
 		padding: 1rem;
+	}
+	.footer_logo_box img {
+		width: 6rem;
 	}
 	.footer_text {
 		font-size: 1.5rem;

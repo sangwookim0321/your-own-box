@@ -7,15 +7,15 @@
 	export let data
 
 	const items = data.props.abilityTestItems
+	const sessionData = data.props.abilityTest
 	let username = ''
-	let sessionData = {}
 	$: $storeTestData
 
-	storeTestData.set(items)
-
 	onMount(() => {
-		sessionData = JSON.parse(sessionStorage.getItem('testItems'))
+		sessionStorage.setItem('testItems', JSON.stringify(sessionData))
 	})
+
+	storeTestData.set(items)
 
 	function sweetToast(title, icon) {
 		showToast({
@@ -79,7 +79,7 @@
 		/>
 	</div>
 	<div>
-		<button on:click={start}>시작하기</button>
+		<button class={username.length > 0 ? 'ok' : 'no'} on:click={start}>시작하기</button>
 	</div>
 </main>
 
@@ -125,12 +125,14 @@
 		padding: 1rem 16.5rem;
 		border: none;
 		border-radius: 4px;
-		background-color: var(--main-bg-lightGray);
 		color: var(--main-bg-white);
 		cursor: pointer;
 	}
-	button:hover {
+	.ok {
 		background-color: var(--main-bg-gray);
+	}
+	.no {
+		background-color: var(--main-bg-lightGray);
 	}
 
 	@media (max-width: 768px) {

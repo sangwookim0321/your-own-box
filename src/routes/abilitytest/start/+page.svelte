@@ -4,17 +4,15 @@
 	import { storeTestData } from '$lib/store/store.js'
 	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte'
 
-	console.log($storeTestData)
-	let id = 0
-	let category = ''
+	let id = 0 // 테스트 아이디
+	let category = '' // 테스트 카테고리
 
-	let items = $storeTestData
-	let info = {}
-	let username = ''
+	let items = $storeTestData // 테스트 문제 리스트
+	let info = {} // 테스트 정보
+	let username = '' // 유저 이름
 	let currentQuestionIndex = 0
-	let userAnswers = []
-	let message = ''
-	let completed = false
+	let userAnswers = [] // 유저가 선택한 정답 리스트
+	let completed = false // 테스트 완료 여부
 
 	onMount(async () => {
 		id = sessionStorage.getItem('test_id')
@@ -51,7 +49,6 @@
 			completed = true
 
 			result()
-			// goto('/some-result-page'); // 모든 문제를 답변한 후 결과 페이지로 이동 등
 		}
 	}
 
@@ -73,6 +70,7 @@
 				wrong++
 				items[i].result = 'wrong'
 			}
+			items[i].user_answer = userAnswers[i]
 		}
 
 		const user_result = {
@@ -83,14 +81,15 @@
 			correct: correct, // 정답
 			wrong: wrong, // 오답
 			score: totalScore, // 총 점수
-			message: message, // 유저 피드백 메세지
 			agent: navigator.userAgent.toLowerCase(),
-			create_at: new Date()
+			created_at: new Date()
 		}
+
+		storeTestData.set(items)
 
 		sessionStorage.setItem('user_result', JSON.stringify(user_result))
 
-		await goto(`/abilitytest/end${id}?category=${category}`)
+		await goto(`/abilitytest/end/?${id}&category=${category}`)
 	}
 </script>
 
