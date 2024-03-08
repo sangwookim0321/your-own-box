@@ -7,7 +7,6 @@
 	let currentPath = ''
 
 	$: currentPath = $page.url.pathname
-	$: console.log(currentPath)
 
 	function toggleSubMenu() {
 		showSubMenu = !showSubMenu

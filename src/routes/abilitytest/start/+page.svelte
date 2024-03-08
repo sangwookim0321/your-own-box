@@ -3,12 +3,16 @@
 	import { goto } from '$app/navigation'
 	import { storeTestData } from '$lib/store/store.js'
 	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte'
+	import useApi from '$lib/util/api'
+
+	const { httpPost, endPoints } = useApi()
 
 	let id = 0 // 테스트 아이디
 	let category = '' // 테스트 카테고리
 
 	let items = $storeTestData // 테스트 문제 리스트
 	let info = {} // 테스트 정보
+	let user_result = {}
 	let username = '' // 유저 이름
 	let currentQuestionIndex = 0
 	let userAnswers = [] // 유저가 선택한 정답 리스트
@@ -40,12 +44,9 @@
 	function selectAnswer(answerIndex) {
 		userAnswers[currentQuestionIndex] = answerIndex + 1 // 답변 저장
 
-		console.log('userAnswers : ', userAnswers)
 		if (currentQuestionIndex < items.length - 1) {
 			currentQuestionIndex += 1 // 다음 문제로 인덱스 업데이트
 		} else {
-			// 모든 문제에 답변했다면 결과 처리 로직을 여기에 추가
-			console.log('Test completed', userAnswers)
 			completed = true
 
 			result()
@@ -73,7 +74,7 @@
 			items[i].user_answer = userAnswers[i]
 		}
 
-		const user_result = {
+		let user_result = {
 			test_id: parseInt(id),
 			test_name: info.title,
 			username: username,
@@ -85,23 +86,58 @@
 			created_at: new Date()
 		}
 
-		storeTestData.set(items)
+		await saveResult(user_result)
 
+		storeTestData.set(items)
 		sessionStorage.setItem('user_result', JSON.stringify(user_result))
 
 		await goto(`/abilitytest/end/?${id}&category=${category}`)
+	}
+
+	async function saveResult(user_result) {
+		if (
+			!user_result.username ||
+			!user_result.test_id ||
+			!user_result.test_name ||
+			!user_result.number_q ||
+			!user_result.correct ||
+			!user_result.wrong ||
+			!user_result.score ||
+			!user_result.agent ||
+			!user_result.created_at
+		) {
+			return
+		}
+
+		console.log('save user_result', user_result)
+
+		await httpPost(
+			endPoints.ABILITY_TEST_SAVE,
+			'abilityTest',
+			user_result,
+			false,
+			(res) => {
+				console.log('save success', res)
+				user_result.save_user_id = res.data.data.id
+			},
+			(err) => {
+				console.error(err)
+			},
+			() => {},
+			() => {}
+		)
 	}
 </script>
 
 <main>
 	{#if !completed}
-		<div class="progress_bar_outer">
-			<div class="progress_bar_inner" style="width: {progressPercentage}%;"></div>
-		</div>
-
 		<div class="info_box">
 			<div class="info_title">{info.title}</div>
 			<div class="info_username">이름 : {username}</div>
+		</div>
+
+		<div class="progress_bar_outer">
+			<div class="progress_bar_inner" style="width: {progressPercentage}%;"></div>
 		</div>
 		{#if items.length > 0}
 			<div class="test_box">
@@ -153,6 +189,7 @@
 	.progress_bar_outer {
 		width: 100%;
 		height: 20px;
+		margin: 2rem 0;
 		background-color: var(--main-bg-lightGray);
 		border-radius: 10px;
 		overflow: hidden;
@@ -166,8 +203,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		padding: 5rem;
-		border-bottom: 2px solid var(--main-bg-gray);
+		padding: 3rem 0;
 	}
 	.info_title {
 		font-size: 4rem;

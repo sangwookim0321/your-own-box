@@ -6,7 +6,7 @@
 	import { showToast, showAlert } from '$lib/util/alerts'
 	import useApi from '$lib/util/api'
 
-	const { httpPost, endPoints } = useApi()
+	const { httpPatch, endPoints } = useApi()
 
 	let items = $storeTestData // 테스트 문제 리스트
 	let id = 0 // 테스트 아이디
@@ -15,6 +15,7 @@
 	let username = '' // 유저 이름
 	let userResult = {} // 유저 시험 결과
 	let user_message = '' // 유저 후기
+	let show_message_box = false // 후기 입력창 보이기 여부
 
 	let rank = '' // 랭크
 	let admin_message = ''
@@ -32,8 +33,6 @@
 		if ($storeTestData.length === 0) {
 			await goto(`/abilitytest/${id}?category=${category}`)
 		}
-
-		saveResult()
 	})
 
 	// Supabase 스토리지의 베이스 URL
@@ -138,39 +137,44 @@
 		return rankClasses[rank] || ''
 	}
 
-	function sendMessage() {
+	async function sendMessage() {
 		// 유저 후기 등록
+		if (!userResult.save_user_id) {
+			sweetToast('id 가 존재하지 않습니다.', 'warning')
+			return
+		}
 		if (!user_message) {
 			sweetToast('내용을 입력해주세요', 'warning')
 			return
 		}
 
-		userResult.message = user_message
-
-		saveResult()
+		await updateResult()
+		sweetToast('감사합니다!', 'success')
+		user_message = ''
+		show_message_box = true
 	}
 
-	async function saveResult() {
-		if (
-			!userResult.agent ||
-			!userResult.correct ||
-			!userResult.wrong ||
-			!userResult.score ||
-			!userResult.created_at ||
-			!userResult.number_q ||
-			!userResult.test_id ||
-			!userResult.username ||
-			!userResult.test_name
-		) {
+	async function updateResult() {
+		if (!userResult.save_user_id) {
+			return
+		}
+		if (user_message === '') {
 			return
 		}
 
-		await httpPost(
+		const data = {
+			id: userResult.save_user_id,
+			message: user_message
+		}
+
+		await httpPatch(
 			endPoints.ABILITY_TEST_SAVE,
-			'abilityTest',
-			userResult,
+			'abilityTestUpdate',
+			data,
 			false,
-			(res) => {},
+			(res) => {
+				console.log('update success', res)
+			},
 			(err) => {
 				console.error(err)
 			},
@@ -193,11 +197,13 @@
 			<div class="result_box_03">랭크</div>
 		</div>
 		<div class="result_group_box">
-			<div class="result_box_04">{userResult.correct} / {userResult.wrong}</div>
+			<div class="result_box_04"><span>{userResult.correct} / {userResult.wrong}</span></div>
 			<div class="result_box_05">
-				{userResult.score ? `${userResult.score}점` : '점수가 등록되지 않은 시험 입니다.'}
+				<span>
+					{userResult.score ? `${userResult.score}점` : '-'}
+				</span>
 			</div>
-			<div class="result_box_06 {rankClass(rank)}">{rank}</div>
+			<div class="result_box_06 {rankClass(rank)}"><span>{rank}</span></div>
 		</div>
 	</div>
 
@@ -224,10 +230,17 @@
 			</div>
 		</div>
 
-		<div class="feedback_box">
-			<input type="text" placeholder="후기 또는 피드백을 남겨주세요!" bind:value={user_message} />
-			<button on:click={sendMessage}>등록</button>
-		</div>
+		{#if !show_message_box}
+			<div class="feedback_box">
+				<input
+					type="text"
+					placeholder="후기 또는 피드백을 남겨주세요!"
+					maxlength="100"
+					bind:value={user_message}
+				/>
+				<button on:click={sendMessage}>등록</button>
+			</div>
+		{/if}
 	</div>
 
 	<div class="question_box">
@@ -306,7 +319,11 @@
 		font-size: 2rem;
 		font-family: 'Pretendard', sans-serif;
 	}
+	.result_box span {
+		font-size: 2rem;
+	}
 	.result_box_01 {
+		display: flex;
 		border-top: 2px solid var(--main-bg-gray);
 		border-left: 2px solid var(--main-bg-gray);
 		padding: 2rem;
@@ -351,6 +368,7 @@
 		padding: 5rem;
 		font-size: 2rem;
 		font-weight: 700;
+		text-align: center;
 		font-family: 'Pretendard', sans-serif;
 		color: var(--main-bg-gray);
 	}

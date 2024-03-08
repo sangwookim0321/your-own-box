@@ -129,7 +129,7 @@ const useApi = () => {
 			const response = await axios.post(callUrl, postData, _reqOption)
 			success(response)
 		} catch (err) {
-			fail(err.response.data)
+			fail(err)
 		} finally {
 			pending_post[reqKey] = false
 			finallyCallback() // 최종 작업 완료 후 콜백

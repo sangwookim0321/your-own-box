@@ -24,6 +24,13 @@ export async function load({ params, url }) {
 		return { status: 500, error: new Error('Unable to fetch ability test items') }
 	}
 
+	const { data, error } = await supabase.rpc('increment', { x: 1, row_id: id })
+
+	if (error) {
+		console.error('error', error)
+		return { status: 500, error: new Error('Unable to increment') }
+	}
+
 	return {
 		props: {
 			abilityTest: abilityTest[0],

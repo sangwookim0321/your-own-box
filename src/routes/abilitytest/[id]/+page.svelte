@@ -74,6 +74,7 @@
 		<input
 			type="text"
 			placeholder="이름을 입력해주세요"
+			maxlength="12"
 			bind:value={username}
 			on:keydown={handleKeydown}
 		/>
