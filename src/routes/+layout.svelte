@@ -25,6 +25,8 @@
 				<div class="header_logo" on:click={goHome}>
 					<img src="/imgs/main-logo-128.png" alt="main-logo" />
 				</div>
+			{:else}
+				<div class="header_logo"></div>
 			{/if}
 			<div class="hamburger" on:click={toggleSubMenu}>
 				<img src="/imgs/icon_menu.svg" alt="메뉴" />
@@ -74,7 +76,6 @@
 		display: flex;
 		align-items: center;
 		width: 100%;
-		height: 20px;
 	}
 	.header_end {
 		justify-content: flex-end;
@@ -82,9 +83,13 @@
 	.header_between {
 		justify-content: space-between;
 	}
+	.header_logo {
+		width: 40px;
+		height: 40px;
+	}
 	.header_logo img {
-		width: 50px;
-		height: 50px;
+		width: 100%;
+		height: 100%;
 		cursor: pointer;
 	}
 	.layout {
