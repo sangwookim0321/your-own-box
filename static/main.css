@@ -72,8 +72,7 @@ button,
 span,
 input,
 p,
-a,
-div, textarea, label {
+a {
 	font-family: 'Pretendard', sans-serif;
 }
 

@@ -49,9 +49,13 @@
 					setItems(data)
 				}}
 			>
-				<img src={getImageUrl(data.img_url)} alt={data.title} />
-				<p class="item_p1">{data.title}</p>
-				<p class="item_p2">{data.sub_title}</p>
+				<div class="item_img_box">
+					<img src={getImageUrl(data.img_url)} alt={data.title} />
+				</div>
+				<div class="item_text_box">
+					<p class="item_p1">{data.title}</p>
+					<p class="item_p2">{data.sub_title}</p>
+				</div>
 			</div>
 		{/each}
 	</div>
@@ -64,6 +68,7 @@
 		align-items: center;
 		max-width: 560px;
 		margin: 0 auto;
+		font-family: 'Pretendard', sans-serif;
 	}
 	.main_logo_box {
 		margin-bottom: 50px;
@@ -89,6 +94,12 @@
 		cursor: pointer;
 		text-align: center;
 	}
+	.item_img_box {
+		width: 100%;
+		height: 200px;
+	}
+	.item_text_box {
+	}
 	.item img {
 		width: 100%;
 		height: 100%;
@@ -109,5 +120,15 @@
 	}
 	.item:nth-child(2n) {
 		margin-right: 0;
+	}
+
+	@media (max-width: 768px) {
+		.item_img_box {
+			height: 200px;
+		}
+		.item {
+			width: 100%;
+			margin-right: 0;
+		}
 	}
 </style>

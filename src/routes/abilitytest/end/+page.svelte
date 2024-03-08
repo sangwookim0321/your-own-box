@@ -172,9 +172,7 @@
 			'abilityTestUpdate',
 			data,
 			false,
-			(res) => {
-				console.log('update success', res)
-			},
+			(res) => {},
 			(err) => {
 				console.error(err)
 			},
@@ -235,7 +233,7 @@
 				<input
 					type="text"
 					placeholder="후기 또는 피드백을 남겨주세요!"
-					maxlength="100"
+					maxlength="50"
 					bind:value={user_message}
 				/>
 				<button on:click={sendMessage}>등록</button>

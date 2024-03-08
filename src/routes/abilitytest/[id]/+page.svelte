@@ -50,7 +50,7 @@
 </script>
 
 <main>
-	<div>
+	<div class="text_box_01">
 		<span class="span_01">
 			{sessionData.title}
 		</span>
@@ -103,11 +103,17 @@
 	.span_03 {
 		font-size: 2rem;
 	}
+	.text_box_01 {
+		text-align: center;
+		margin: 2rem 0;
+	}
 	.text_box_02 {
+		text-align: center;
 		margin: 2rem 0;
 	}
 	.text_box_03 {
 		margin: 2rem 0;
+		text-align: center;
 	}
 	input {
 		margin: 2rem 0;

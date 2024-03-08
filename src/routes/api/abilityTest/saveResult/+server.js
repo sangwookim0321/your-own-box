@@ -6,17 +6,7 @@ export async function POST({ request }) {
 	const { agent, correct, wrong, created_at, number_q, score, test_id, test_name, username } =
 		await request.json()
 
-	if (
-		!agent ||
-		!correct ||
-		!wrong ||
-		!created_at ||
-		!number_q ||
-		!score ||
-		!test_id ||
-		!test_name ||
-		!username
-	) {
+	if (!agent || !created_at || !number_q || !test_id || !test_name || !username) {
 		return json(
 			{
 				message: 'POST Bad Request',

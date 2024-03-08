@@ -74,6 +74,11 @@
 			items[i].user_answer = userAnswers[i]
 		}
 
+		const userAgent = navigator.userAgent.toLowerCase()
+		const browser = userAgent.match(/chrome|firefox|safari|opera|msie|trident\//)
+			? userAgent.match(/(chrome|firefox|safari|opera|msie|trident)\/?\s*(\d+)/i)[1]
+			: 'Unknown Browser'
+
 		let user_result = {
 			test_id: parseInt(id),
 			test_name: info.title,
@@ -82,7 +87,7 @@
 			correct: correct, // 정답
 			wrong: wrong, // 오답
 			score: totalScore, // 총 점수
-			agent: navigator.userAgent.toLowerCase(),
+			agent: browser,
 			created_at: new Date()
 		}
 
@@ -100,16 +105,11 @@
 			!user_result.test_id ||
 			!user_result.test_name ||
 			!user_result.number_q ||
-			!user_result.correct ||
-			!user_result.wrong ||
-			!user_result.score ||
 			!user_result.agent ||
 			!user_result.created_at
 		) {
 			return
 		}
-
-		console.log('save user_result', user_result)
 
 		await httpPost(
 			endPoints.ABILITY_TEST_SAVE,
@@ -117,7 +117,6 @@
 			user_result,
 			false,
 			(res) => {
-				console.log('save success', res)
 				user_result.save_user_id = res.data.data.id
 			},
 			(err) => {
@@ -129,7 +128,7 @@
 	}
 </script>
 
-<main>
+<main class={info.title === '경상도 사투리 시험' ? 'font-chosun' : 'font-pretendard'}>
 	{#if !completed}
 		<div class="info_box">
 			<div class="info_title">{info.title}</div>
@@ -172,9 +171,13 @@
 </main>
 
 <style>
-	div {
+	.font-chosun {
 		font-family: 'ChosunCentennial', sans-serif;
 	}
+	.font-pretendard {
+		font-family: 'Pretendard', sans-serif;
+	}
+
 	.loading_box {
 		display: flex;
 		flex-direction: column;
@@ -227,7 +230,6 @@
 		justify-content: center;
 		height: 100%;
 		font-size: 1.6rem;
-		font-family: 'ChosunCentennial', sans-serif;
 		padding: 20px;
 		border: 1px solid var(--main-bg-gray);
 		overflow: auto;

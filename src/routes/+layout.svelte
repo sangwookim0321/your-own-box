@@ -70,6 +70,7 @@
 		justify-content: center;
 		align-items: center;
 		width: 100%;
+		font-family: 'Pretendard', sans-serif;
 	}
 	header {
 		padding: 1rem;
