@@ -182,7 +182,7 @@
 	}
 </script>
 
-<main>
+<main class={info.title === '경상도 사투리 시험' ? 'font-chosun' : 'font-pretendard'}>
 	<div class="info_box">
 		<div class="info_title">{info.title} 결과</div>
 		<div class="info_username">이름 : {username}</div>
@@ -283,8 +283,11 @@
 </main>
 
 <style>
-	div {
+	.font-chosun {
 		font-family: 'ChosunCentennial', sans-serif;
+	}
+	.font-pretendard {
+		font-family: 'Pretendard', sans-serif;
 	}
 	.info_box {
 		display: flex;
@@ -494,7 +497,6 @@
 		justify-content: center;
 		height: 100%;
 		font-size: 1.6rem;
-		font-family: 'ChosunCentennial', sans-serif;
 		padding: 20px;
 		border: 1px solid var(--main-bg-gray);
 		overflow: auto;
