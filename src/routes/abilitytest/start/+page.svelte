@@ -1,5 +1,5 @@
 <script>
-	import { onMount } from 'svelte'
+	import { onMount, onDestroy } from 'svelte'
 	import { goto } from '$app/navigation'
 	import { storeTestData } from '$lib/store/store.js'
 	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte'
@@ -17,6 +17,8 @@
 	let currentQuestionIndex = 0
 	let userAnswers = [] // 유저가 선택한 정답 리스트
 	let completed = false // 테스트 완료 여부
+	let seconds = 0
+	let interval
 
 	onMount(async () => {
 		id = sessionStorage.getItem('test_id')
@@ -25,9 +27,17 @@
 		info = JSON.parse(sessionStorage.getItem('testItems'))
 		username = sessionStorage.getItem('test_username')
 
+		interval = setInterval(() => {
+			seconds += 1
+		}, 1000)
+
 		if ($storeTestData.length === 0) {
 			await goto(`/abilitytest/${id}?category=${category}`)
 		}
+	})
+
+	onDestroy(() => {
+		clearInterval(interval)
 	})
 
 	$: progressPercentage = (currentQuestionIndex / items.length) * 100
@@ -38,6 +48,14 @@
 	// 이미지의 전체 URL을 계산하는 함수
 	function getImageUrl(imgUrl) {
 		return `${baseUrl}${imgUrl}`
+	}
+
+	function formatTime(seconds) {
+		const hours = Math.floor(seconds / 3600)
+		const minutes = Math.floor((seconds % 3600) / 60)
+		const sec = seconds % 60
+
+		return [hours, minutes, sec].map((v) => String(v).padStart(2, '0')).join(':')
 	}
 
 	// 사용자가 답변을 선택했을 때 호출되는 함수
@@ -88,7 +106,8 @@
 			wrong: wrong, // 오답
 			score: totalScore, // 총 점수
 			agent: browser,
-			created_at: new Date()
+			created_at: new Date(),
+			seconds: seconds
 		}
 
 		await saveResult(user_result)
@@ -133,6 +152,7 @@
 		<div class="info_box">
 			<div class="info_title">{info.title}</div>
 			<div class="info_username">이름 : {username}</div>
+			<div class="info_username">시험 시간 : {formatTime(seconds)}</div>
 		</div>
 
 		<div class="progress_bar_outer">

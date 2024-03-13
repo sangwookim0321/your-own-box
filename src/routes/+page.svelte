@@ -1,9 +1,14 @@
 <script>
+	import { onMount } from 'svelte'
 	import { goto } from '$app/navigation'
+	import InfiniteScroll from '$lib/components/InfiniteScroll.svelte'
 
 	export let data
 
 	const items = data.props.combinedData
+	let pageNum = 1
+	let limit = 10
+	let total = 0
 
 	// Supabase 스토리지의 베이스 URL
 	const baseUrl = 'https://aqnmhrbebgwoziqtyyns.supabase.co/storage/v1/object/public/'
@@ -35,6 +40,13 @@
 			goto(`/mbtitest/${data.id}?category=${data.category}`)
 		}
 	}
+
+	async function fetchNextPage() {
+		if (items.length >= total) {
+			return
+		}
+		pageNum += 1
+	}
 </script>
 
 <main>
@@ -59,6 +71,7 @@
 			</div>
 		{/each}
 	</div>
+	<InfiniteScroll fetchNext={fetchNextPage} />
 </main>
 
 <style>

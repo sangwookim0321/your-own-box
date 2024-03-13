@@ -62,6 +62,14 @@
 		return `${baseUrl}${imgUrl}`
 	}
 
+	function formatTime(seconds) {
+		const hours = Math.floor(seconds / 3600)
+		const minutes = Math.floor((seconds % 3600) / 60)
+		const sec = seconds % 60
+
+		return [hours, minutes, sec].map((v) => String(v).padStart(2, '0')).join(':')
+	}
+
 	function toTop() {
 		// 화면 상단 이동
 		window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -187,6 +195,7 @@
 		<div class="info_title">{info.title} 결과</div>
 		<div class="info_username">이름 : {username}</div>
 		<div class="info_date">날짜 : {formatDate(userResult.created_at)}</div>
+		<div class="info_date">시험 시간 : {formatTime(userResult.seconds)}</div>
 	</div>
 	<div class="result_box">
 		<div class="result_group_box">
