@@ -62,7 +62,7 @@
 		display: flex;
 		justify-content: center;
 		min-height: 100vh;
-		background-color: rgb(248, 248, 248);
+		background-color: rgb(255, 255, 255);
 	}
 	main {
 		display: flex;

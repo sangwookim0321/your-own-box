@@ -32,7 +32,7 @@
 		const hashedCategory = simpleHash(data.category).toString()
 		sessionStorage.setItem('testItems', JSON.stringify(data))
 
-		if (data.category === '능력고사') {
+		if (data.category === '능력고사' || data.category === '맞추기') {
 			sessionStorage.setItem('test_id', data.id)
 			sessionStorage.setItem('test_category', hashedCategory)
 			goto(`/abilitytest/${data.id}?category=${hashedCategory}`)

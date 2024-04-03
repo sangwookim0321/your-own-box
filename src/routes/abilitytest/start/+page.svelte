@@ -149,46 +149,55 @@
 
 <main class={info.title === '경상도 사투리 시험' ? 'font-chosun' : 'font-pretendard'}>
 	{#if !completed}
-		<div class="info_box">
-			<div class="info_title">{info.title}</div>
-			<div class="info_username">이름 : {username}</div>
-			<div class="info_username">시험 시간 : {formatTime(seconds)}</div>
-		</div>
-
-		<div class="progress_bar_outer">
-			<div class="progress_bar_inner" style="width: {progressPercentage}%;"></div>
-		</div>
-		{#if items.length > 0}
-			<div class="test_box">
-				<div class="question">
-					{items[currentQuestionIndex].question_number}.{items[currentQuestionIndex].question_name}
-				</div>
-				{#if items[currentQuestionIndex].sub_img_url}
-					<div class="question_img">
-						<img src={getImageUrl(items[currentQuestionIndex].sub_img_url)} alt="question_img" />
-					</div>
-				{/if}
-				{#if items[currentQuestionIndex].question_etc}
-					<div class="question_etc" contenteditable="false">
-						{@html items[currentQuestionIndex].question_etc}
-					</div>
-				{/if}
-				<div class="question_list">
-					{#each items[currentQuestionIndex].question_list as option, index}
-						<span on:click={() => selectAnswer(index)}>{option}</span>
-					{/each}
-				</div>
+	  <div class="info_box">
+		<div class="info_title">{info.title}</div>
+		<div class="info_username">이름 : {username}</div>
+		<div class="info_username">시험 시간 : {formatTime(seconds)}</div>
+	  </div>
+	  <div class="{info.category === '맞추기' ? 'progress_bar_outer_fit' : 'progress_bar_outer'}">
+		<div class="{info.category === '맞추기' ? 'progress_bar_inner_fit' : 'progress_bar_inner'}" style="width: {progressPercentage}%;"></div>
+	  </div>
+	  {#if items.length > 0}
+		<div class="{info.category === '맞추기' ? 'test_box_fit' : 'test_box'}">
+		  {#if info.category === '맞추기'}
+			{#if items[currentQuestionIndex].sub_img_url}
+			  <div class="question_img_fit">
+				<img src={getImageUrl(items[currentQuestionIndex].sub_img_url)} alt="question_img" />
+			  </div>
+			{/if}
+			<div class="question_fit">
+			  {items[currentQuestionIndex].question_name}
 			</div>
-		{/if}
-	{/if}
-
-	{#if completed}
-		<div class="loading_box">
-			<LoadingSpinner />
-			<p>잠시만 기다려 주세요 :)</p>
+		  {:else}
+			<div class="question">
+			  {items[currentQuestionIndex].question_number}.{items[currentQuestionIndex].question_name}
+			</div>
+			{#if items[currentQuestionIndex].sub_img_url}
+			  <div class="question_img">
+				<img src={getImageUrl(items[currentQuestionIndex].sub_img_url)} alt="question_img" />
+			  </div>
+			{/if}
+		  {/if}
+		  {#if items[currentQuestionIndex].question_etc}
+			<div class="{info.category === '맞추기' ? 'question_etc_fit' : 'question_etc'}" contenteditable="false">
+			  {@html items[currentQuestionIndex].question_etc}
+			</div>
+		  {/if}
+		  <div class="{info.category === '맞추기' ? 'question_list_fit' : 'question_list'}">
+			{#each items[currentQuestionIndex].question_list as option, index}
+			  <span on:click={() => selectAnswer(index)}>{option}</span>
+			{/each}
+		  </div>
 		</div>
+	  {/if}
 	{/if}
-</main>
+	{#if completed}
+	  <div class="loading_box">
+		<LoadingSpinner />
+		<p>잠시만 기다려 주세요 :)</p>
+	  </div>
+	{/if}
+  </main>
 
 <style>
 	.font-chosun {
@@ -279,6 +288,80 @@
 		font-weight: 700;
 	}
 
+
+	.test_box_fit {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.question_fit {
+		padding: 2rem;
+		font-size: 2.2rem;
+	}
+	.question_list_fit {
+		display: flex;
+		flex-direction: column;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+	.question_list_fit span {
+		width: 200px;
+		padding: 1rem;
+		margin: 1rem 1.2rem;
+		cursor: pointer;
+		font-size: 1.8rem;
+		color: var(--main-bg-white);
+		background-color: var(--main-bg-green);
+		border-radius: 1rem;
+		transition: 0.5s;
+		text-align: center;
+	}
+	.question_list_fit span:hover {
+		transition: 0.3s;
+		font-weight: 700;
+		background-color: var(--main-bg-darkPink);
+	}
+	.question_img_fit {
+		display: flex;
+		justify-content: center;
+		padding-bottom: 2rem;
+		width: 100%;
+		height: 400px;
+	}
+	.question_img_fit img {
+		width: 100%;
+		max-width: 400px;
+		max-height: 400px;
+		border-radius: 1rem;
+	}
+	.question_etc_fit {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		height: 100%;
+		font-size: 1.6rem;
+		padding: 20px;
+		margin-bottom: 2rem;
+		border: 1px solid var(--main-bg-gray);
+		overflow: auto;
+		white-space: pre-wrap;
+		line-height: 1.5;
+	}
+	.progress_bar_outer_fit {
+		width: 100%;
+		height: 20px;
+		margin: 2rem 0;
+		background-color: var(--main-bg-lightGray-02);
+		border-radius: 10px;
+		overflow: hidden;
+	}
+	.progress_bar_inner_fit {
+		height: 100%;
+		background-color: var(--main-bg-yellow);
+		transition: width 0.5s ease-in-out;
+	}
+	
+
 	@media (max-width: 768px) {
 		.info_box {
 			padding: 2rem;
@@ -304,6 +387,21 @@
 		}
 		.question_list span:hover {
 			font-weight: 500;
+		}
+		.question_fit {
+			font-size: 1.6rem;
+			padding: 1rem;
+			text-align: center;
+		}
+		.question_list_fit {
+			flex-direction: column;
+			text-align: center;
+		}
+		.question_list_fit span {
+			padding: 1.2rem;
+			margin: 0.5rem 0.6rem;
+			font-size: 1.6rem;
+			border-radius: 1rem;
 		}
 	}
 </style>
