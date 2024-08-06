@@ -24,7 +24,11 @@ export async function load({ params, url }) {
 		return { status: 500, error: new Error('Unable to fetch ability test items') }
 	}
 
-	const { data, error } = await supabase.rpc('increment', { x: 1, row_id: id })
+	const { data, error } = await supabase.rpc('increment', {
+		x: 1,
+		row_id: id,
+		table_name: 'ability_tests'
+	})
 
 	if (error) {
 		console.error('error', error)
